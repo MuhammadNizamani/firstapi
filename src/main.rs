@@ -14,7 +14,7 @@
 //     Ok(())
 // }
  // adding post request now 
-use serde::Deserialize;
+ use serde::Deserialize;
 use tide::{Request, Response, Body};
 
 #[derive(Deserialize)]
@@ -23,18 +23,12 @@ struct Person {
     age: u32,
 }
 
-async fn handle_post(request: Request<Body>) -> tide::Result<Response> {
-    // Deserialize the request body into a Person struct
+async fn handle_post(mut request: Request<()>) -> tide::Result<Response> {
     let person: Person = request.body_json().await?;
     
-    // Access the name and age
     let name = person.name;
     let age = person.age;
     
-    // Process the name and age or perform other operations
-    // ...
-    
-    // Create a response
     let response = Response::builder(200)
         .body(format!("Received POST request with name: {} and age: {}", name, age))
         .build();
@@ -46,7 +40,6 @@ async fn handle_post(request: Request<Body>) -> tide::Result<Response> {
 async fn main() -> tide::Result<()> {
     let mut app = tide::new();
     
-    // Define the POST route
     app.at("/post").post(handle_post);
 
     app.listen("127.0.0.1:8000").await?;
